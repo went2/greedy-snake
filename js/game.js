@@ -4,21 +4,33 @@ import Snake from './Snake.js';
 export default class Game {
 
   constructor(map) {
+    
+    this.map = map;
     this.food = new Food();
-    this.snake = new Snake();
-    this.map = map
+    this.score = document.querySelector('.score');
+    this.restart = document.querySelector('.restart');
+    this.playTimes = 0;
   }
 
   start() {
-    this.food.renderFood(this.map);
-    this.snake.renderSnake(this.map);
+    if(this.playTimes === 0) {
+      this.bindKey();
+      this.bindHandler();
+    }
 
-    this.bindKey();
+    this.snake = new Snake();
+
+    this.food.renderFood(this.map);
+    // this.snake.renderSnake();
+
+    clearInterval(this.timer);
     this.runSnake();
+
+    this.playTimes++
   }
 
   runSnake() {
-    let timer = setInterval(() => {
+    this.timer = setInterval(() => {
       this.snake.move(this.food, this.map);
       this.snake.renderSnake(this.map);
 
@@ -27,20 +39,18 @@ export default class Game {
       var headX = this.snake.body[0].x;
       var headY = this.snake.body[0].y;
 
-      if(headX <= 0 || headX >=  maxX) {
-          // alert('Game Over!');
-          clearInterval(timer);
-      }
-
-      if(headY <= 0 || headY >=  maxY) {
-          // alert('Game Over!');
-          clearInterval(timer);
+      if(headX <= 0 || headX >=  maxX || headY <= 0 || headY >=  maxY) {
+          clearInterval(this.timer);
       }
     }, 150)
   }
 
   bindKey() {
     document.addEventListener('keydown', this.keydownHandler.bind(this), false)
+  }
+
+  bindHandler() {
+    this.restart.addEventListener('click', this.start.bind(this))
   }
 
   keydownHandler(event) {

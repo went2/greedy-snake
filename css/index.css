@@ -1,3 +1,25 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+header {
+  margin: 0 auto;
+  padding: 10px 240px;
+  width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+header h1 {
+  display: inline-block;
+}
+
+header button {
+  height: fit-content;
+}
+
 #map {
   position: relative;
   margin: 0 auto;

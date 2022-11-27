@@ -8,32 +8,35 @@ export default class Snake {
       {x: 4, y: 3, background: 'url("images/body.png")'},
       {x: 3, y: 3, background: 'url("images/body.png")'}
     ];
+    this.container = document.querySelector('#snake-container')
   }
 
   removeSnake() {
-    for (let i = this.elements.length - 1; i >= 0; i--) {
-      // remove div
-      this.elements[i].parentNode.removeChild(this.elements[i]);
+    this.container.innerHTML = '';
+    this.elements = [];
+    // for (let i = this.elements.length - 1; i >= 0; i--) {
+    //   this.elements[i].parentNode.removeChild(this.elements[i]);
 
-      this.elements.splice(i, 1);
-    }
+    //   this.elements.splice(i, 1);
+    // }
   }
 
-  renderSnake(map) {
+  renderSnake() {
     this.removeSnake();
 
     this.body.forEach(snakeData => {
+      // dom
       const ele = document.createElement('div');
+      this.container.appendChild(ele);
       
+      // local data
       this.elements.push(ele);
 
-      // init snake style
+      // style
       ele.classList.add('class', 'snake');
       ele.style.left = `${snakeData.x * 20}px`;
       ele.style.top = `${snakeData.y * 20}px`;
       ele.style.backgroundImage = snakeData.background;
-
-      map.appendChild(ele);
     })
   }
 
