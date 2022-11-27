@@ -8,17 +8,15 @@ export default class Snake {
       {x: 4, y: 3, background: 'url("images/body.png")'},
       {x: 3, y: 3, background: 'url("images/body.png")'}
     ];
-    this.container = document.querySelector('#snake-container')
+    this.eatSound = new Audio('../sounds/yummy.mp3');
+    this.container = document.querySelector('#snake-container');
+
+    this.getFoodEvent = new Event('GET_FOOD');
   }
 
   removeSnake() {
     this.container.innerHTML = '';
     this.elements = [];
-    // for (let i = this.elements.length - 1; i >= 0; i--) {
-    //   this.elements[i].parentNode.removeChild(this.elements[i]);
-
-    //   this.elements.splice(i, 1);
-    // }
   }
 
   renderSnake() {
@@ -74,6 +72,9 @@ export default class Snake {
         y: last.y,
         background: 'url("images/body.png")'
       });
+
+      this.eatSound.play();
+      document.dispatchEvent(this.getFoodEvent);
 
       // generate food
       food.renderFood(map);

@@ -4,26 +4,25 @@ import Snake from './Snake.js';
 export default class Game {
 
   constructor(map) {
-    
     this.map = map;
     this.food = new Food();
-    this.score = document.querySelector('.score');
+    this.scoreEle = document.querySelector('.score');
     this.restart = document.querySelector('.restart');
     this.playTimes = 0;
+    this.scores = 0;
   }
 
   start() {
+    this.snake = new Snake();
+    this.food.renderFood(this.map);
+    clearInterval(this.timer);
+
     if(this.playTimes === 0) {
       this.bindKey();
       this.bindHandler();
     }
 
-    this.snake = new Snake();
-
-    this.food.renderFood(this.map);
-    // this.snake.renderSnake();
-
-    clearInterval(this.timer);
+    this.updateScoreView();
     this.runSnake();
 
     this.playTimes++
@@ -45,12 +44,22 @@ export default class Game {
     }, 150)
   }
 
+  updateScoreView() {
+    this.scoreEle.innerHTML = `收集宝石 ${ this.scores } 个`
+  }
+
   bindKey() {
     document.addEventListener('keydown', this.keydownHandler.bind(this), false)
   }
 
   bindHandler() {
-    this.restart.addEventListener('click', this.start.bind(this))
+    this.restart.addEventListener('click', this.start.bind(this));
+    document.addEventListener('GET_FOOD', this.getFoodHandler.bind(this));
+  }
+
+  getFoodHandler() {
+    this.scores++;
+    this.updateScoreView();
   }
 
   keydownHandler(event) {
