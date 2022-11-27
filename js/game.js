@@ -1,69 +1,77 @@
-(function(window, undefined){
+import Food from './Food.js';
+import Snake from './Snake.js';
 
-    var that; // record game object
+export default class Game {
+
+  constructor(map) {
+    this.food = new Food();
+    this.snake = new Snake();
+    this.map = map
+  }
+
+  start() {
+    this.food.renderFood(this.map);
+    this.snake.renderSnake(this.map);
+
+    this.bindKey();
+    this.runSnake();
+  }
+
+  runSnake() {
+    let timer = setInterval(() => {
+      this.snake.move(this.food, this.map);
+      this.snake.renderSnake(this.map);
+
+      var maxX = this.map.offsetWidth / 20;
+      var maxY = this.map.offsetHeight / 20;
+      var headX = this.snake.body[0].x;
+      var headY = this.snake.body[0].y;
+
+      if(headX <= 0 || headX >=  maxX) {
+          // alert('Game Over!');
+          clearInterval(timer);
+      }
+
+      if(headY <= 0 || headY >=  maxY) {
+          // alert('Game Over!');
+          clearInterval(timer);
+      }
+    }, 150)
+  }
+
+  bindKey() {
+    document.addEventListener('keydown', this.keydownHandler.bind(this), false)
+  }
+
+  keydownHandler(event) {
+    if (event.defaultPrevented) {
+      return; // Do nothing if event already handled
+    }
     
-    function Game(map) {
-        this.food = new Food();
-        this.snake = new Snake();
-        this.map = map;
-        that = this;
+    switch(event.code) {
+      case "KeyW":
+      case "ArrowUp":
+        this.snake.direction = 'top';
+        break;
+      case "KeyS":
+      case "ArrowDown":
+        this.snake.direction = 'bottom';
+        break;
+      case "KeyA":
+      case "ArrowLeft":
+        this.snake.direction = 'left';
+        break;
+      case "KeyD":
+      case "ArrowRight":
+        this.snake.direction = 'right';
+        break;
     }
 
-    Game.prototype.start = function(){
-        this.food.renderFood(this.map);
-        this.snake.renderSnake(this.map);
-
-        // make snake move
-        runSnake();
-
-        // key control
-        bindKey();
+    if (event.code !== "Tab") {
+      // Consume the event so it doesn't get handled twice,
+      // as long as the user isn't trying to move focus away
+      event.preventDefault();
     }
-
-    function bindKey(){
-        document.addEventListener('keydown', function(e){
-            // 37-left 38-top 39-right 40-down
-            switch(e.keyCode) {
-                case 37:
-                    this.snake.direction = 'left';
-                    break;
-                case 38:
-                    this.snake.direction = 'top';
-                    break;
-                case 39:
-                    this.snake.direction = 'right';
-                    break;
-                case 40:
-                    this.snake.direction = 'bottom';
-                    break;
-            }
-
-        }.bind(that), false)
-    }
-
-    function runSnake(){
-        var timeId = setInterval(function(){
-            this.snake.move(this.food, this.map);
-            this.snake.renderSnake(this.map);
-
-            var maxX = this.map.offsetWidth / 20;
-            var maxY = this.map.offsetHeight / 20;
-            var headX = this.snake.body[0].x;
-            var headY = this.snake.body[0].y;
-
-            if(headX <= 0 || headX >=  maxX) {
-                alert('Game Over!');
-                clearInterval(timeId);
-            }
-
-            if(headY <= 0 || headY >=  maxY) {
-                alert('Game Over!');
-                clearInterval(timeId);
-            }
-
-        }.bind(that), 150)
-    }
-
-    window.Game = Game;
-})(window, undefined);
+  }
+}
 

@@ -1,39 +1,29 @@
-(function(window, undefined){
+export default class Food {
+  constructor (x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+    this.foodElement = [];
+  }
 
-    var elementsFood = []; // only has one element: previously created food div 
+  renderFood(map) {
+    if(this.foodElement[0]) this.removeFood();
 
-    function Food(x, y){
-        this.x = x || 0;
-        this.y = y || 0;
-    }
+    // generate random positon for food
+    this.x = parseInt(map.offsetWidth / 20 * Math.random()) * 20;
+    this.y = parseInt(map.offsetHeight / 20 * Math.random()) * 20;
 
-    function removeFood(){
-        elementsFood[0].parentNode.removeChild(elementsFood[0]);
-        elementsFood.pop();
-    }
+    const ele = document.createElement('div');
+    this.foodElement.push(ele);
+    ele.classList.add('food');
+    ele.style.left = `${this.x}px`;
+    ele.style.top = `${this.y}px`;
 
-    // render food object to map
-    Food.prototype.renderFood = function(map){
-        // remove previous food
-        if(elementsFood[0]) {removeFood()};
+    map.appendChild(ele);
+  }
 
-        // generate random positon of food in map
-        this.x = parseInt(map.offsetWidth / 20 * Math.random()) * 20;
-        this.y = parseInt(map.offsetHeight / 20 * Math.random()) * 20;
-        
-        // create food div and set style
-        var div = document.createElement('div');
-        map.appendChild(div);
-        elementsFood.push(div);
-
-        div.setAttribute('class', 'food');
-
-        div.style.left = this.x + 'px';
-        div.style.top = this.y + 'px';
-    
-    };
-    
-    window.Food = Food;
-
-})(window, undefined);
+  removeFood() {
+    this.foodElement[0].parentNode.removeChild(this.foodElement[0]);
+    this.foodElement.pop();
+  }
+}
 
